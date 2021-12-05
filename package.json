@@ -18,6 +18,7 @@
   "homepage": "https://github.com/ioncakephper/uix#readme",
   "dependencies": {
     "file-easy": "^1.0.3",
-    "hbsr": "^1.0.6"
+    "hbsr": "^1.0.6",
+    "lodash": "^4.17.21"
   }
 }

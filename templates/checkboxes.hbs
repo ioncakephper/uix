@@ -1,0 +1,8 @@
+    <label for="{{{name}}}">{{{label}}}:{{#if required}}<span class="form-label-required">*</span>{{/if}}</label>
+    {{#each options as |option|}}
+    <div class="form-check">
+    <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" value="{{{option.value}}}" name="{{{../name}}}"{{#if checked}} checked{{/if}}>{{{option.label}}}
+    </label>
+    </div>
+        {{/each}}
