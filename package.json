@@ -1,0 +1,23 @@
+{
+  "name": "uix",
+  "version": "1.0.0",
+  "description": "UI elements Library for NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ioncakephper/uix.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ioncakephper/uix/issues"
+  },
+  "homepage": "https://github.com/ioncakephper/uix#readme",
+  "dependencies": {
+    "file-easy": "^1.0.3",
+    "hbsr": "^1.0.6"
+  }
+}
