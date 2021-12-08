@@ -1,0 +1,21 @@
+<label for="{{{name}}}">{{{label}}}:</label>
+<table name="{{{name}}}" id="{{{name}}}" class="table table-hover table-striped table-sm">
+    <thead>
+        <tr>
+            {{#each headers as |header|}}
+            <th>{{{header}}}</th>
+            {{/each}}
+        </tr>
+    </thead>
+    <tbody>
+        {{#if rows}}
+            {{#each rows as |row|}}
+        <tr>
+                {{#each row as |cell|}}
+            <td>{{{cell}}}</td>
+                {{/each}}
+        </tr>
+            {{/each}}
+        {{/if}}
+    </tbody>
+</table>

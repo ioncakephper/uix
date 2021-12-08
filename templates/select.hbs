@@ -1,0 +1,6 @@
+    <label for="{{{name}}}">{{{label}}}:{{#if required}}<span class="form-label-required">*</span>{{/if}}</label>
+    <select name="{{{name}}}" id="{{{name}}}" class="form-select"{{#if required}} required{{/if}}>
+        {{#each options as |option|}}
+        <option value="{{{option.value}}}{{#if checked}} selected{{/if}}">{{{option.label}}}</option>
+        {{/each}}
+    </select>

@@ -8,105 +8,82 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
+    <style>
+      .form-label-required {
+        color: red;
+      }
+    </style>
+
     <title>Hello, world!</title>
   </head>
   <body>
     <div class="container-fluid">
     <h1>Hello, world!</h1>
 
-    <div class="form-group form-group-wrapper form-group-wrapper-text">
-    <label for="first-name">First name:</label>
-    <input type="text" class="form-control" name="first-name" id="first-name" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-text">
-    <label for="last-name">Last name:<span class="form-label-required">*</span></label>
-    <input type="text" class="form-control" name="last-name" id="last-name" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-text">
-    <label for="middle-name">Middle name:</label>
-    <input type="text" class="form-control" name="middle-name" id="middle-name" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-radio">
-    <label for="gender">Gender:</label>
-    <div class="form-check">
-    <label class="form-check-label">
-        <input type="radio" class="form-check-input" value="0" name="gender">Female
-    </label>
+        <div class="form-group form-group-wrapper form-group-wrapper-form">
+        <form method="POST" action="">
+            <div class="form-group form-group-wrapper form-group-wrapper-text">
+                    <label for="label">Label:<span class="form-label-required">*</span></label>
+                    <input type="text" class="form-control" name="label" id="label" required />
+                
+            </div>
+            <div class="form-group form-group-wrapper form-group-wrapper-text">
+                    <label for="name">Name:<span class="form-label-required">*</span></label>
+                    <input type="text" class="form-control" name="name" id="name" required />
+                
+            </div>
+            <div class="form-group form-group-wrapper form-group-wrapper-select">
+                    <label for="type">Type:<span class="form-label-required">*</span></label>
+                    <select name="type" id="type" class="form-select" required>
+                        <option value="0">Boolean</option>
+                        <option value="1">Checkboxes</option>
+                        <option value="2">Color</option>
+                        <option value="3">File</option>
+                        <option value="4">Image</option>
+                        <option value="5">Number</option>
+                        <option value="6">Radio</option>
+                        <option value="7">Range</option>
+                        <option value="8">Select</option>
+                        <option value="9">Text</option>
+                        <option value="10">Textarea</option>
+                    </select>
+            </div>
+            <div class="form-group form-group-wrapper form-group-wrapper-checkbox">
+                  <div class="form-group form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" name="required" id="required"> Required
+                    </label>
+                  </div>
+            </div>
+            <div class="form-group form-group-wrapper form-group-wrapper-text">
+                    <label for="help-text">Help text:</label>
+                    <input type="text" class="form-control" name="help-text" id="help-text" />
+                
+            </div>
+            <div class="form-group form-group-wrapper form-group-wrapper-checkbox">
+                  <div class="form-group form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" name="is-record-key" id="is-record-key"> Is record key
+                    </label>
+                  </div>
+            </div>
+            <div class="form-group form-group-wrapper form-group-wrapper-checkbox">
+                  <div class="form-group form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" name="is-record-label" id="is-record-label"> Is record label
+                    </label>
+                  </div>
+            </div>
+            <div class="form-group form-group-wrapper form-group-wrapper-textarea">
+                   <label for="description">Description:</label>
+                   <textarea name="description" id="description" class="form-control"></textarea>
+            </div>
+            <div class="form-group form-group-wrapper form-group-wrapper-button">
+                <input type="button" value="Submit" class="form-control form-button btn btn-primary">
+            </div>
+        </form>
+        
     </div>
-    <div class="form-check">
-    <label class="form-check-label">
-        <input type="radio" class="form-check-input" value="1" name="gender">Male
-    </label>
-    </div>
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-range">
-    <label for="range">Range:</label>
-    <input type="range" class="form-control" name="range" id="range" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-month">
-    <label for="month">Month:</label>
-    <input type="month" class="form-control" name="month" id="month" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-week">
-    <label for="week">Week:</label>
-    <input type="week" class="form-control month" name="week" id="week" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-file">
-    <label for="file">File:</label>
-    <input type="file" class="form-control" name="file" id="file" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-image">
-    <label for="image">Image:</label>
-    <input type="image" class="form-control" name="image" id="image" alt="" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-hidden">
-    <label for="hidden">Hidden:</label>
-    <input type="hidden" class="form-control" name="hidden" id="hidden" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-color">
-    <label for="background">Background:</label>
-    <input type="color" class="form-control" name="background" id="background" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-phone">
-    <label for="phone">Phone:</label>
-    <input type="tel" class="form-control" name="phone" id="phone" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-checkboxes">
-    <label for="roles">Roles:</label>
-    <div class="form-check">
-    <label class="form-check-label">
-        <input type="checkbox" class="form-check-input" value="0" name="roles" checked>Option 1
-    </label>
-    </div>
-    <div class="form-check">
-    <label class="form-check-label">
-        <input type="checkbox" class="form-check-input" value="1" name="roles" checked>Option 2
-    </label>
-    </div>
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-number">
-    <label for="applications">Applications:</label>
-    <input type="number" class="form-control" name="applications" id="applications" />
-</div>
-<div class="form-group form-group-wrapper form-group-wrapper-checkbox">
-  <div class="form-group form-check">
-    <label class="form-check-label">
-      <input class="form-check-input" type="checkbox" name="manager" id="manager"> Manager
-    </label>
-  </div></div>
-<div class="form-group form-group-wrapper form-group-wrapper-date">
-    <label for="date-of-birth">Date of Birth:</label>
-    <input type="date" class="form-control" name="date-of-birth" id="date-of-birth" /></div>
-<div class="form-group form-group-wrapper form-group-wrapper-time">
-    <label for="local-time">Local time:</label>
-    <input type="time" class="form-control" name="local-time" id="local-time" /></div>
-<div class="form-group form-group-wrapper form-group-wrapper-datetime">
-    <label for="date-and-time">Date and time:</label>
-    <input type="datetime-local" class="form-control" name="date-and-time" id="date-and-time" /></div>
-<div class="form-group form-group-wrapper form-group-wrapper-email">
-    <label for="email">Email:</label>
-    <input type="email" class="form-control" name="email" id="email" />
-</div>
     </div>
 
 
