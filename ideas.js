@@ -202,3 +202,4 @@ let tableForms = tableNames.map(tableName => {
 })
 
 console.log(JSON.stringify(tableForms, null, 4))
+
