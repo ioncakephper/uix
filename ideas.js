@@ -1,188 +1,204 @@
-const hbsr = require("hbsr");
-const fileEasy = require("file-easy");
+const fileEasy = require('file-easy')
 
 
-const ui = require("./lib/ui");
-const { TextUiField } = require("./lib/ui");
-
-
-class UiForm extends ui.UiField {
-    constructor(formFields, options = {}) {
-        super('form', '', options);
-        this.props = {
-            ...this.props,
-            ...{formFields: formFields},
-            ...{
-                method: "POST",
-                action: ""
-            },
-        }
-        this.props.formFields.push(new ui.ButtonUiField('Submit'))
-    }
-
-
-    contentVariables(values = {}) {
-        return {
-            fields: this.props.formFields.map(formField => {
-                return formField.render(values)
-            }),
-            method: this.props.method,
-            action: this.props.action,
-        }
-    }
-}
-
-class TableUiField extends ui.UiField {
-    constructor(label, headers = [], rows = [], options = {}) {
-        super('table', label, options);
-        this.props = {
-            ...this.props,
-            ...{
-                headers: headers,
-                rows: rows,
-            }
-        }
-    }
-}
-
-
-class GroupUiField extends ui.UiField {
-    constructor(label, items = [], options = {}) {
-        super('group', label, {...options, ...{items: items}})
-    }
-
-    contentVariables(values = {}) {
-        return {...super.contentVariables(values), ...{
-            fields: this.props.items.map(field => field.render(values))
-        },}
-
-    }
-}
-  
-
-class GenderUiField extends ui.RadioUiField {
+class Column {
     constructor(label, options = {}) {
-        super(label, options);
+        this.props = {
+            ...{
+                label: label.trim(),
+                name: fileEasy.slug(label),
+                type: 'text'
+            },
+            ...this.defaultOptions(options),
+            ...options
+        }
+        this.props.name = fileEasy.slug(this.props.name)
     }
-    
+
     defaultOptions(options = {}) {
-        return {
-            options: ["Female", "Male"].map((label, idx) => {
-                return {
-                    label: label,
-                    value: `${idx}`,
-                }
-            })
+        return {}
+    }
+}
+
+class ColumnFactory {
+    constructor(tableNames = []) {
+        this.tableNames = tableNames;
+        this.COLUMNTYPE = {
+            Text: 0,
+            Date: 1,
+            Boolean: 2,
+            Enum: 3,
+            Address: 4,
+            Number: 5,
+            Name: 8,
+            Key: 6,
+            Reference: 7,
+        }
+    }
+
+    createColumn(columnHeader) {
+        switch(this.inferType(columnHeader)) {
+            case this.COLUMNTYPE.Key:
+                return this.createKeyColumn(columnHeader)
+            case this.COLUMNTYPE.Reference:
+                return this.createReferenceColumn(columnHeader)
+            case this.COLUMNTYPE.Date:
+                return this.createDateColumn(columnHeader)
+            case this.COLUMNTYPE.Name:
+                return this.createNameColumn(columnHeader)
+            default:
+                return this.createTextColumn(columnHeader)
+        }
+    }
+
+    inferType(columnHeader) {
+        if (this.tableNames.includes(columnHeader)) {
+            return this.COLUMNTYPE.Reference
+        }
+        let r;
+        r = /^ID$/ig;
+        if (r.test(columnHeader))
+            return this.COLUMNTYPE.Key
+        r = /Name/ig;
+        if (r.test(columnHeader))
+            return this.COLUMNTYPE.Name
+
+        r = /^is.+/ig
+        if (r.test(columnHeader)) 
+            return this.COLUMNTYPE.Boolean;
+
+        r = /(Date)/ig;
+        if (r.test(columnHeader))
+            return this.COLUMNTYPE.Date;
+
+        return this.COLUMNTYPE.Text;
+    }
+
+    createTextColumn(columnHeader) {
+        return new Column(columnHeader, {type: 'text'})
+    }
+
+    createNameColumn(columnHeader) {
+        let column = this.createTextColumn(columnHeader);
+        column.props.validators = ["isPersonName"]
+        return column;
+    }
+
+    createDateColumn(columnHeader) {
+        return new Column(columnHeader, {type: 'date'})
+    }
+
+    createReferenceColumn(columnHeader) {
+        let column = this.createTextColumn(columnHeader);
+        column.props.validators = [["references", `"${columnHeader}"`]];
+        return column
+    }
+
+    createKeyColumn(columnHeader) {
+        return new Column(columnHeader, {
+            validators: [
+                "isUnique"
+            ]
+        })
+    }
+}
+
+class UiForm {
+    constructor(fields= [], options= {}) {
+        this.props = {
+            ...{
+                fields: fields,
+            },
+            ...options,
         }
     }
 }
 
-// let headers = ['Name', 'DOB']
-// let rows = [
-//     ['Cooper, Dale', '12/11/1961'],
-//     ['Cooper, Dale', '12/11/1961'],
-//     ['Cooper, Dale', '12/11/1961'],
-//     ['Cooper, Dale', '12/11/1961'],
-//     ['Cooper, Dale', '12/11/1961'],
-// ]
-// let f = new UiForm([new ui.TextUiField('First name', {required: true}),
-// new TableUiField('Table', headers, rows),
-// new ui.SelectUiField('Dropdown'),
-// new ui.CheckboxUiField('Required'),
-// new GroupUiField('Name', [
-//     new ui.TextUiField('First name'),
-//     new ui.TextUiField('Last name'),
-//     new ui.TextUiField('Middle name'),
-//     new GenderUiField('Gender'),
-// ], {required: true})]);
- 
-// let results = f.render({})
-// console.log(results)
+class UiField {
+    constructor(type, label, options = {}) {
+        this.props = {
+            ...{
+                type: type,
+                label: label.trim(),
+                name: fileEasy.slug(label),
+            },
+            ...this.defaultOptions(options),
+            ...options,
+        }
+        this.props.name = fileEasy.slug(this.props.name)
+    }
 
-// let content = hbsr.render_template('page', {content: results});
-// fileEasy.saveDocument('sample.html', content)
+    defaultOptions(options = {}) {
+        return {}
+    }
+}
 
+class FormFieldFactory {
+    createField(column) {
+        switch (column.type) {
+            default: return new UiField('text', column.props.label)
+        }
+    }
+}
 
+let columnHeaders = "ID, First name, Last name, Middle name, DOB, Gender, Address, Apartment";
 
-// let formFields = [
-//     new TextUiField('Field label', {
-//         validators: [
-//             {
-//                 name: 'required',
-//                 value: `true`,
-//             }
-//         ]
-//     })
-// ]
+let columnHeaderNames = columnHeaders.split(/\s*\,\s*/);
+let columnFactory = new ColumnFactory(["Apartment"]);
+let columns = columnHeaderNames.map(colHeaderName => {
+    return columnFactory.createColumn(colHeaderName)
+})
 
-// let formDemo = new UiForm(formFields)
+console.log(JSON.stringify(columns, null, 4))
 
 
-// let formHtml = formDemo.render({});
-// let validation = hbsr.render(`
-// {
-//     rules: {
-//         {{#each fields as |field|}}
-//         "{{{field.props.name}}}": {
-//             {{#each field.props.validators as |validator|}}
-//             "{{{validator.name}}}": {{{validator.value}}},
-//             {{/each}}
-//         }
-//         {{/each}}
-//     },
-//     messages: {
-//         {{#each fields as |field|}}
-//         "{{{field.props.name}}}": {
-//             {{#each field.props.validators as |validator|}}
-//             "{{{validator.name}}}": {{{validator.message}}},
-//             {{/each}}
-//         }
-//         {{/each}}
-//     }
-// }`, {
-//     fields: formDemo.props.formFields
-// })
+// Create entities from column headers
 
+let entityHeaders = {
+    'Tenant': {
+        columnHeaders:  "ID, First name, Last name, Middle name, DOB, Gender, Address, Apartment",
+    },
+    'Apartment': {
+        columnHeaders: "ID, Title, Unit",
+    },
 
-// console.log(`${formHtml}
-// <script>
-//     $().ready(function() {
-//         $('#formHtml').validate(
-//             ${JSON.stringify(validation, null, 4)}
-//         )
-//     })
-// </script>
-// `)
+    'Unit': {
+        columnHeaders: "ID, Title, Address"
+    }
+}
 
+let tableNames = Object.keys(entityHeaders);
+columnFactory = new ColumnFactory(tableNames);
 
-
-let fieldPropertiesFields = [
-    new ui.TextUiField('Label', {
-        required: true,
-    }),
-    new ui.TextUiField('Name', {
-        required: true,
-    }),
-    new ui.SelectUiField('Type', {
-        required: true,
-        options: "Text Number Boolean Radio Checkboxes Select Color Range File Image Textarea".split(/\s+/).sort().map((label, idx) => {
-            return {
-                label: label,
-                value: `${idx}`
-            }
+let tables = {};
+tableNames.forEach(tableName => {
+    let columnHeaderNames = entityHeaders[tableName].columnHeaders.split(/\s*\,\s*/)
+    tables[tableName] = {
+        name: tableName,
+        columns: columnHeaderNames.map(columnHeader => {
+            return columnFactory.createColumn(columnHeader)
         })
-    }), 
-    new ui.CheckboxUiField('Required'),
-    new ui.TextUiField('Help text'),
-    new ui.CheckboxUiField('Is record key'),
-    new ui.CheckboxUiField('Is record label'),
-    new ui.TextareaUiField('Description'),
-]
-let fieldPropertiesForm = new UiForm(fieldPropertiesFields);
+    }
+})
 
+console.log(JSON.stringify(tables, null, 4))
 
-let results = fieldPropertiesForm.render({})
-console.log(results)
+let formFieldFactory = new FormFieldFactory();
 
-let content = hbsr.render_template('page', {content: results});
-fileEasy.saveDocument('sample.html', content) 
+let tableForms = tableNames.map(tableName => {
+    let columns = tables[tableName].columns;
+    let fields = columns.map(column => formFieldFactory.createField(column));
+    let newFields = columns.filter(column => column.props.type != "key").map(column => formFieldFactory.createField(column));
+    return {
+        table: tableName,
+        form: {
+            "default": new UiForm(fields, {method: "POST", name: tableName}),
+            "new": new UiForm(newFields, {method: "POST", name: tableName}),
+        },
+        grid: {
+            'default': ''
+        }
+    }
+})
+
+console.log(JSON.stringify(tableForms, null, 4))
