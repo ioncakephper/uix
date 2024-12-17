@@ -20,7 +20,7 @@
   "dependencies": {
 
     "file-easy": "^1.0.4",
-    "hbsr": "^1.0.6",
+    "hbsr": "^1.0.11",
 
     "lodash": "^4.17.21"
   },
