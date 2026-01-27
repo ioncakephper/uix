@@ -25,7 +25,7 @@
     "hbsr": "^1.0.12",
 
 
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.23"
   },
   "devDependencies": {
     "jest": "^27.4.5"
